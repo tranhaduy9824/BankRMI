@@ -29,8 +29,11 @@ public class BankServer {
         try {
             LocateRegistry.createRegistry(port);
             BankService bankService = new BankServiceImpl(textArea, serviceName);
-            Naming.rebind("rmi://localhost:" + port + "/" + serviceName, bankService);
-            SwingUtilities.invokeLater(() -> textArea.append("Bank RMI Server " + serviceName + " is running on port " + port + "...\n"));
+            String hostAddress = java.net.InetAddress.getLocalHost().getHostAddress(); // Lấy địa chỉ IP của máy chủ
+            Naming.rebind("rmi://" + hostAddress + ":" + port + "/" + serviceName, bankService);
+
+            // Cập nhật thông báo với địa chỉ IP
+            SwingUtilities.invokeLater(() -> textArea.append("Bank RMI Server " + serviceName + " is running on port " + port + " at IP address " + hostAddress + "...\n"));
         } catch (Exception e) {
             SwingUtilities.invokeLater(() -> textArea.append("Error starting server " + serviceName + ": " + e.getMessage() + "\n"));
             e.printStackTrace();
